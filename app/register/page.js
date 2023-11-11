@@ -2,15 +2,41 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+require('dotenv').config()
+
+import { useRouter } from "next/navigation";
+
 
 export default function RegisterPage() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [name, setName] = useState("SOnn");
+    const [email, setEmail] = useState("adjasd@gmail.com");
+    const [password, setPassword] = useState("dddddd");
     const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            setLoading(true);
+            const { data } = await axios.post(
+                `${process.env.NEXT_PUBPLIC_API}/register`,
+                {
+                    name,
+                    email,
+                    password,
+                }
+            );
+            console.log("register => ", data);
+            setLoading(false);
+            toast.success('Register success. Please login.')
+            router.push('/frontface')
+        }
+        catch (err){
+            console.log(err)
+            setLoading(false)
+            toast.error(err.response.data.error);
+        }
     }
     return (
         <div className="container">
