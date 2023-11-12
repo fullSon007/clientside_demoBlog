@@ -1,8 +1,9 @@
 
 import './globals.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import HeaderNav from '@/components/nav/HeaderNav'   
-import { Toaster } from 'react-hot-toast'  
+import HeaderNav from '@/components/nav/HeaderNav'
+import { Toaster } from 'react-hot-toast'
+import { AuthProvider } from '@/context/auth'
 
 export const metadata = {
   title: 'Create Next App',
@@ -13,11 +14,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Toaster />
-        <HeaderNav />
-        {children}
-        
-        </body>
+
+        <AuthProvider>
+          <Toaster />
+          <HeaderNav />
+          {children}
+        </AuthProvider>
+
+      </body>
     </html>
   )
 }

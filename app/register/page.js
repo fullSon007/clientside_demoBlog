@@ -1,13 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-require('dotenv').config()
+// require('dotenv').config()
 
 import { useRouter } from "next/navigation";
-
+import { useAuth } from "@/context/auth";
 
 export default function RegisterPage() {
+    // context
+    const {setAuth} = useAuth();
+
+    // state
     const [name, setName] = useState("SOnn");
     const [email, setEmail] = useState("adjasd@gmail.com");
     const [password, setPassword] = useState("dddddd");
@@ -20,17 +24,19 @@ export default function RegisterPage() {
         try {
             setLoading(true);
             const { data } = await axios.post(
-                `${process.env.NEXT_PUBPLIC_API}/register`,
+                `${process.env.NEXT_PUBLIC_API}`,
                 {
                     name,
                     email,
                     password,
                 }
             );
-            console.log("register => ", data);
+            // console.log("register => ", data);
+            localStorage.setItem("auth", JSON.stringify(data));
+            setAuth(data);
             setLoading(false);
             toast.success('Register success. Please login.')
-            router.push('/frontface')
+            router.push('/')
         }
         catch (err){
             console.log(err)
