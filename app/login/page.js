@@ -2,17 +2,14 @@
 import { useState} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-// require('dotenv').config()
-
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth";
 
-export default function RegisterPage() {
+export default function LoginPage() {
     // context
     const {setAuth} = useAuth();
 
     // state
-    const [name, setName] = useState("SOnn");
     const [email, setEmail] = useState("adjasd@gmail.com");
     const [password, setPassword] = useState("dddddd");
     const [loading, setLoading] = useState(false);
@@ -24,9 +21,8 @@ export default function RegisterPage() {
         try {
             setLoading(true);
             const { data } = await axios.post(
-                `${process.env.NEXT_PUBLIC_API}/register`,
+                `${process.env.NEXT_PUBLIC_API}/login`,
                 {
-                    name,
                     email,
                     password,
                 }
@@ -35,8 +31,8 @@ export default function RegisterPage() {
             localStorage.setItem("auth", JSON.stringify(data));
             setAuth(data);
             setLoading(false);
-            toast.success('Register success. Please login.')
-            router.push('/')
+            toast.success('Login success.')
+            router.push(data?.user?.role === "Admin" ? "/admin" : "/user")
         }
         catch (err){
             console.log(err)
@@ -48,15 +44,8 @@ export default function RegisterPage() {
         <div className="container">
             <div className="d-flex justify-content-center align-items-center vh-100">
                 <div className="row">
-                    <h2 className="mb-3">Register</h2>
+                    <h2 className="mb-3">Login</h2>
                     <form onSubmit={handleSubmit}>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter your name"
-                            className="form-control mb-3"
-                        />
 
                         <input
                             type="email"
@@ -75,7 +64,7 @@ export default function RegisterPage() {
                         />
 
                         <button className="btn btn-primary"
-                            disabled={loading || !name || !email || !password} >
+                            disabled={loading || !email || !password} >
                             {loading ? "Loading..." : "Submit"}
                         </button>
                     </form>
