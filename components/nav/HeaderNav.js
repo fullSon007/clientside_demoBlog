@@ -23,6 +23,10 @@ export default function HeaderNav() {
                     <Link className="nav-link" href={`${auth?.user?.role === "Admin" ? "/admin" : "/user"}`}>
                         Dashboard
                     </Link>
+                    <Link className="nav-link" href={"/maps"}>
+                        Map
+                    </Link>
+
                     <a onClick={logout} className="nav-link" style={{cursor: "pointer"}} href="/login">Logout</a>
                 </>
             ) : (
