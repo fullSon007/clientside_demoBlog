@@ -3,12 +3,14 @@ import { useAuth } from "@/context/auth"
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import axios from "axios";
 import Map from "@/components/Map/Map";
 
 // const Map = dynamic(() => import('../components/Map/Map'), { ssr: false });
 
-export default function Home() {
+export default function Home({ initialShips }) {
     const [ships, setShips] = useState([]);
+    const [selectedShip, setSelectedShip] = useState(null);
     const { auth } = useAuth()
 
     useEffect(() => {
@@ -19,6 +21,21 @@ export default function Home() {
         ];
         setShips(initialShips);
     }, []);
+
+  //   useEffect(() => {
+  //       // Function to fetch data from the API
+  //       const fetchData = async () => {
+  //         try {
+  //           const response = await axios.get('https://data.aishub.net/ws.php?username=USERNAME&format=1&output=json&compress=3&latmin=20.5&latmax=30.8&lonmin=-15&lonmax=18.6');
+  //           setShips(response.data);
+  //         } catch (error) {
+  //           console.error('Error fetching data:', error);
+  //         }
+  //       };
+
+  //       fetchData();
+  // }, []);
+
 
     const addShip = () => {
         const shipName = prompt('Enter ship name:');
@@ -33,13 +50,23 @@ export default function Home() {
           }
         };
 
+
+        const deleteShip = (shipId) => {
+          setShips(ships.filter((ship) => ship.id !== shipId));
+        };
+
+        const updateShip = (shipId, newShip) => {
+          setShips(ships.map((ship) => (ship.id === shipId ? newShip : ship)));
+        };
+      
+
     return (
         <>
             {auth?.token && auth?.user ? (
                 <div>
                     <h1>Ship Tracking App</h1>
                     <button onClick={addShip}>Add Ship</button>
-                    <Map ships={ships} />
+                    <Map ships={ships} deleteShip={deleteShip} updateShip={updateShip}  />
                 </div>
             ) : (
                 <p className="d-flex justify-content-center align-items-center vh-100 text-danger">
@@ -49,3 +76,15 @@ export default function Home() {
         </>
     );
 }
+
+// export async function getServerSideProps() {
+//     // Function to fetch initial data for server-side rendering
+//     const response = await axios.get('https://data.aishub.net/ws.php?username=USERNAME&format=1&output=json&compress=3&latmin=20.5&latmax=30.8&lonmin=-15&lonmax=18.6');
+//     const initialShips = response.data;
+  
+//     return {
+//       props: {
+//         initialShips,
+//       },
+//     };
+//   }
